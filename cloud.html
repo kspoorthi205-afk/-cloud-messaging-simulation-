@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cloud Messaging Integration</title>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-messaging.js"></script>
+</head>
+<body>
+  <h2>Cloud Messaging Listener</h2>
+  <p id="message">Waiting for messages...</p>
+
+  <script>
+    // Step 1: Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    // Step 2: Initialize Messaging
+    const messaging = firebase.messaging();
+
+    // Step 3: Request Permission
+    messaging.requestPermission()
+      .then(() => messaging.getToken())
+      .then(token => {
+        console.log("FCM Token:", token);
+        // Send this token to your backend to subscribe to messages
+      })
+      .catch(err => console.error("Permission denied", err));
+
+    // Step 4: Listen for Messages
+    messaging.onMessage(payload => {
+      console.log("Message received:", payload);
+      document.getElementById("message").innerText = payload.notification.title;
+    });
+  </script>
+</body>
+</html>
